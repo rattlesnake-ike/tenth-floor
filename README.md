@@ -1,5 +1,9 @@
 # Tenth Floor
 
+**Play it in your browser: https://rattlesnake-ike.github.io/tenth-floor/** (nothing to install; click once to
+start). Arrows or WASD to move, SPACE to jump, hold UP to search, F for the flashlight. It updates on its own
+whenever a floor is merged.
+
 The class game. You're in the building after hours. Start at the security desk, ride the elevators,
 search every floor for a digit of the door code, stay out of security's way, and get into the 10th
 floor, MFA Computer Arts, before the clock runs out. The building is SVA on West 21st Street; name
