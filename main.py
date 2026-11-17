@@ -43,4 +43,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    sys.exit(asyncio.run(main()))
+    asyncio.run(main())          # no sys.exit(): in a browser it tears the module down before the loop runs
