@@ -6,7 +6,6 @@
 The loop is async so the same file also runs in a web browser (built with pygbag): each frame it hands the
 browser a turn with `await asyncio.sleep(0)`. On a computer that costs nothing.
 """
-import argparse
 import asyncio
 import sys
 
@@ -17,14 +16,13 @@ from engine.game import Game, keys_from_keyboard
 
 
 async def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--floor", help="practice one floor, by file name without .py")
-    args, _ = ap.parse_known_args()
+    # --floor NAME: practice one floor (read by hand: the browser's Python has no argparse)
+    floor = sys.argv[sys.argv.index("--floor") + 1] if "--floor" in sys.argv[:-1] else None
 
     pygame.init()
     screen = pygame.display.set_mode((C.W, C.H), pygame.SCALED)
     pygame.display.set_caption("Tenth Floor")
-    game = Game(practice_floor=args.floor)
+    game = Game(practice_floor=floor)
     clock = pygame.time.Clock()
     while True:
         start = False
