@@ -12,3 +12,4 @@ Engine, elevators, the lobby and the example floor: Isaac Holze, with Claude.
 - Installation Lab + XR Lab: Jerry Xu
 - Floor 7: Computer Lab: Elle
 - Comics: Irene Kao
+- Interior Design: Yifan Wang
