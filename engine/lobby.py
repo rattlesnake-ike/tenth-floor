@@ -89,7 +89,6 @@ class GalleryHall(Room):
     through its left wall."""
 
     title = "Flatiron Gallery"
-    dark = 0.35           # the gallery keeps its night lights on
 
     def build(self):
         self.furniture.append(Plinth(150, C.FLOOR_Y, "primitives", "sculpture: three primitives"))
@@ -145,7 +144,6 @@ class SecurityDesk(Room):
     you. Time the gate, then jump the guard, or go over him from the monitor ledge."""
 
     title = "Security Desk"
-    dark = 0.2            # the desk is lit, so the instructions can be read
 
     def build(self):
         self.furniture.append(Furniture(560, C.FLOOR_Y, 160, 60, "security desk"))
