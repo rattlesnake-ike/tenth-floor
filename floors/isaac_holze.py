@@ -2,7 +2,7 @@
 
 Four rooms, west to east, almost pitch dark: you see what your flashlight shows you.
   1. Paint Storage    a lamp that keeps failing, a ShockBot on patrol, a drone dropping from the ceiling
-  2. Mannequin Room   wooden figure-drawing mannequins that creep toward you whenever you look away
+  2. Mannequin Room   wooden figure-drawing mannequins that creep toward you unless your flashlight is on them
   3. Kiln Room        heat vents in the floor, the kiln press, a platform riding over the vents
   4. The Long Hall    a ShockBot, a Sentry and a guard together; the digit is in a locker up on the ledge.
                       The security terminal by the door freezes them all for 5 seconds. Use it well.
@@ -22,7 +22,8 @@ AUTHOR = "Isaac Holze"
 
 
 class Mannequin:
-    """A wooden figure-drawing mannequin. It only moves when you're facing away from it. Look at it, and it stops.
+    """A wooden figure-drawing mannequin. It only moves when your flashlight isn't on it: face it with the light on
+    (F) and it stops. Turn your back, or turn the light off, and it comes for you.
     It creeps along its own stretch of floor (left..right); touch it and you're caught."""
 
     W, H = 24, 54
@@ -36,7 +37,7 @@ class Mannequin:
 
     def update(self, dt, room, player):
         dx = player.rect.centerx - self.rect.centerx
-        watched = dx * player.facing < 0                          # you face toward it
+        watched = dx * player.facing < 0 and getattr(player, "light_on", True)   # your flashlight is on it
         near_level = abs(player.rect.bottom - C.FLOOR_Y) < 130
         self.moving = (not watched) and near_level and abs(dx) > 4
         if self.moving:
