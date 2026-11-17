@@ -10,3 +10,4 @@ Engine, elevators, the lobby and the example floor: Isaac Holze, with Claude.
 - Art History Center: Elise Dumaine
 - The Library: Fayth Elisa Navarro & Fiori Sims
 - Installation Lab + XR Lab: Jerry Xu
+- Floor 7: Computer Lab: Elle
