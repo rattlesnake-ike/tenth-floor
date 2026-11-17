@@ -181,7 +181,8 @@ class Room:
 
     title = "Untitled room"
     author = "nobody yet"
-    dark = 0.6            # after hours: 0 = fully lit, 1 = pitch black. Your flashlight, lamps and robots light it up.
+    dark = 0.0            # fully lit. A floor that wants the dark sets 0..1 (1 = pitch black): then only the
+                          # flashlight (F), its lamps and its robots' glow light it up.
 
     def __init__(self):
         self.platforms = []   # Platform objects (the ground floor is added for you)
@@ -274,13 +275,8 @@ class Room:
             radius = max(r.width, r.height) // 2 + (60 if hot else 26)
             cut(_light("glow", radius), (r.centerx - radius, r.centery - radius))
         pr = player.rect
-        if getattr(player, "light_on", True):           # the flashlight (F): a glow and a beam the way you face
-            g = _light("glow", 120)
-            cut(g, (pr.centerx - 120, pr.centery - 120))
+        if getattr(player, "light_on", True):           # the flashlight (F): a beam the way you face
             beam = _light("beam_r" if player.facing > 0 else "beam_l")
             bx = pr.centerx if player.facing > 0 else pr.centerx - beam.get_width()
             cut(beam, (bx, pr.top + 12 - beam.get_height() // 2))
-        else:                                           # light off: just enough to see yourself
-            g = _light("glow", 46)
-            cut(g, (pr.centerx - 46, pr.centery - 46))
         surf.blit(shade, (0, 0))
