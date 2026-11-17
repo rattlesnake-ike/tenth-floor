@@ -2,25 +2,27 @@
 
     python main.py                  # play the whole building
     python main.py --floor NAME     # practice your floor (floors/NAME.py): no clock, endless retries
+
+The loop is async so the same file also runs in a web browser (built with pygbag): each frame it hands the
+browser a turn with `await asyncio.sleep(0)`. On a computer that costs nothing.
 """
-import argparse
+import asyncio
 import sys
 
 import pygame
 
-from engine import config as C
+from engine import config as C, sound
 from engine.game import Game, keys_from_keyboard
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--floor", help="practice one floor, by file name without .py")
-    args = ap.parse_args()
+async def main():
+    # --floor NAME: practice one floor (read by hand: the browser's Python has no argparse)
+    floor = sys.argv[sys.argv.index("--floor") + 1] if "--floor" in sys.argv[:-1] else None
 
     pygame.init()
     screen = pygame.display.set_mode((C.W, C.H), pygame.SCALED)
     pygame.display.set_caption("Tenth Floor")
-    game = Game(practice_floor=args.floor)
+    game = Game(practice_floor=floor)
     clock = pygame.time.Clock()
     while True:
         start = False
@@ -36,7 +38,9 @@ def main():
         game.step(dt, keys_from_keyboard(), pressed_start=start)
         game.draw(screen)
         pygame.display.flip()
+        sound.pump()                     # in a browser, sounds are made a little at a time, between frames
+        await asyncio.sleep(0)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    asyncio.run(main())          # no sys.exit(): in a browser it tears the module down before the loop runs
