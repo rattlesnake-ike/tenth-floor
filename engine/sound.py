@@ -96,29 +96,42 @@ def _seq(*parts, gap=0.0):
     return out
 
 
-def _effects(k):
-    """Every effect, at pitch factor k (the takes differ by a few percent)."""
-    return {
-        "jump": _mix(_tone(240 * k, 560 * k, 0.16, 0.22, "tri", decay=0.12), _noise(0.06, 0.06, hi=0.5)),
-        "tick": _noise(0.025, 0.2, lo=0.3, hi=0.9, decay=0.01),
-        "found": _seq(_bell(1319 * k, 0.16, 0.18), _bell(1661 * k, 0.16, 0.18), _bell(1976 * k, 0.16, 0.18),
+def _recipes(k):
+    """(name, how to make it) for every effect at pitch factor k, made one at a time."""
+    return [(name, (lambda name=name: _effects(k, only=name)[name])) for name in NAMES]
+
+
+NAMES = ("jump", "tick", "found", "nothing", "caught", "ding", "locked", "win", "lose", "zap", "alarm", "lunge", "click")
+
+
+def _effects(k, only=None):
+    """Every effect, at pitch factor k (the takes differ by a few percent). `only` makes just that one."""
+    if only:
+        return {only: _EFFECTS[only](k)}
+    return {name: _EFFECTS[name](k) for name in NAMES}
+
+
+_EFFECTS = {   # name -> how to make it at pitch factor k
+        "jump": lambda k: _mix(_tone(240 * k, 560 * k, 0.16, 0.22, "tri", decay=0.12), _noise(0.06, 0.06, hi=0.5)),
+        "tick": lambda k: _noise(0.025, 0.2, lo=0.3, hi=0.9, decay=0.01),
+        "found": lambda k: _seq(_bell(1319 * k, 0.16, 0.18), _bell(1661 * k, 0.16, 0.18), _bell(1976 * k, 0.16, 0.18),
                       _bell(2637 * k, 0.9, 0.2)),
-        "nothing": _seq(_mix(_tone(170 * k, 90 * k, 0.12, 0.35, "sine", decay=0.08), _noise(0.02, 0.2, hi=0.6)),
+        "nothing": lambda k: _seq(_mix(_tone(170 * k, 90 * k, 0.12, 0.35, "sine", decay=0.08), _noise(0.02, 0.2, hi=0.6)),
                         _mix(_tone(130 * k, 70 * k, 0.16, 0.35, "sine", decay=0.1), _noise(0.02, 0.15, hi=0.5))),
-        "caught": _mix(_seq(*[_tone(880 * k, 620 * k, 0.16, 0.16, "square") for _ in range(3)]),
+        "caught": lambda k: _mix(_seq(*[_tone(880 * k, 620 * k, 0.16, 0.16, "square") for _ in range(3)]),
                        _noise(0.5, 0.18, hi=0.35, decay=0.5)),
-        "ding": _seq(_bell(784 * k, 0.55, 0.22), _bell(659 * k, 1.2, 0.22)),
-        "locked": _seq(_tone(196 * k, 190 * k, 0.16, 0.22, "square", vibrato=0.04), _tone(147 * k, 140 * k, 0.32, 0.22, "square", vibrato=0.04),
+        "ding": lambda k: _seq(_bell(784 * k, 0.55, 0.22), _bell(659 * k, 1.2, 0.22)),
+        "locked": lambda k: _seq(_tone(196 * k, 190 * k, 0.16, 0.22, "square", vibrato=0.04), _tone(147 * k, 140 * k, 0.32, 0.22, "square", vibrato=0.04),
                        gap=0.05),
-        "win": _mix(_seq(_bell(1047 * k, 0.18, 0.16), _bell(1319 * k, 0.18, 0.16), _bell(1568 * k, 0.18, 0.16),
+        "win": lambda k: _mix(_seq(_bell(1047 * k, 0.18, 0.16), _bell(1319 * k, 0.18, 0.16), _bell(1568 * k, 0.18, 0.16),
                          _bell(2093 * k, 1.4, 0.2)), _tone(262 * k, 262 * k, 2.0, 0.08, "tri", decay=2.0)),
-        "lose": _seq(_tone(392 * k, 380 * k, 0.4, 0.2, "sine", vibrato=0.02), _tone(330 * k, 320 * k, 0.4, 0.2, "sine", vibrato=0.02),
+        "lose": lambda k: _seq(_tone(392 * k, 380 * k, 0.4, 0.2, "sine", vibrato=0.02), _tone(330 * k, 320 * k, 0.4, 0.2, "sine", vibrato=0.02),
                      _tone(262 * k, 230 * k, 1.1, 0.2, "sine", vibrato=0.03)),
-        "zap": _mix(_noise(0.3, 0.5, lo=0.2, hi=0.9, crackle=0.7, decay=0.3), _tone(120 * k, 118 * k, 0.3, 0.15, "saw", decay=0.3)),
-        "alarm": _tone(1100 * k, 700 * k, 0.22, 0.14, "sine", decay=0.25, vibrato=0.12),
-        "lunge": _noise(0.3, 0.45, sweep=(0.02, 0.6), decay=0.35),
-        "click": _seq(_noise(0.012, 0.25, lo=0.4, hi=0.95, decay=0.006), _noise(0.012, 0.18, lo=0.4, hi=0.95, decay=0.006), gap=0.03),
-    }
+        "zap": lambda k: _mix(_noise(0.3, 0.5, lo=0.2, hi=0.9, crackle=0.7, decay=0.3), _tone(120 * k, 118 * k, 0.3, 0.15, "saw", decay=0.3)),
+        "alarm": lambda k: _tone(1100 * k, 700 * k, 0.22, 0.14, "sine", decay=0.25, vibrato=0.12),
+        "lunge": lambda k: _noise(0.3, 0.45, sweep=(0.02, 0.6), decay=0.35),
+        "click": lambda k: _seq(_noise(0.012, 0.25, lo=0.4, hi=0.95, decay=0.006), _noise(0.012, 0.18, lo=0.4, hi=0.95, decay=0.006), gap=0.03),
+}
 
 
 def _hum_wave():
@@ -141,19 +154,41 @@ def _to_sound(samples):
     return pygame.mixer.Sound(buffer=pcm.tobytes())
 
 
-def _make_all():
+def _jobs():
+    """The sounds to make, one job at a time: the hum, then every effect, take by take."""
     global _hum
     random.seed(11)
+    _hum = _to_sound(_hum_wave())
+    if _want_hum:
+        _hum.play(loops=-1)
+    yield
+    for take in range(TAKES):
+        k = 1.0 + (take - 1) * 0.035
+        for name, make in _recipes(k):
+            _sounds.setdefault(name, []).append(_to_sound(make()))
+            yield
+
+
+_queue = None            # where there are no threads (a web browser): the jobs, run by pump()
+
+
+def _make_all():
     try:
-        _hum = _to_sound(_hum_wave())
-        if _want_hum:
-            _hum.play(loops=-1)
-        for take in range(TAKES):
-            k = 1.0 + (take - 1) * 0.035
-            for name, samples in _effects(k).items():
-                _sounds.setdefault(name, []).append(_to_sound(samples))
+        for _ in _jobs():
+            pass
     except Exception:
         pass
+
+
+def pump():
+    """Call once a frame. Where sounds can't be made in the background (a web browser), this makes the next
+    one. Elsewhere it does nothing."""
+    global _queue
+    if _queue is not None:
+        try:
+            next(_queue)
+        except Exception:
+            _queue = None
 
 
 def _init():
@@ -163,10 +198,15 @@ def _init():
     try:
         if not pygame.mixer.get_init():
             pygame.mixer.init(RATE, -16, 1, 512)
-        _ready = True
-        threading.Thread(target=_make_all, daemon=True).start()
     except Exception:                                          # no audio device: play nothing, never crash
         _ready = False
+        return _ready
+    _ready = True
+    try:
+        threading.Thread(target=_make_all, daemon=True).start()
+    except Exception:                                          # no threads (a web browser): pump() makes them
+        global _queue
+        _queue = _jobs()
     return _ready
 
 
