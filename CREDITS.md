@@ -15,3 +15,4 @@ Engine, elevators, the lobby and the example floor: Isaac Holze, with Claude.
 - Floor 7: Computer Lab: Elle
 - Comics: Irene Kao
 - Interior Design: Yifan Wang
+- SVA Animation (6th floor): Brent Shultz
