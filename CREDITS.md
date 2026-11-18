@@ -16,3 +16,4 @@ Engine, elevators, the lobby and the example floor: Isaac Holze, with Claude.
 - Comics: Irene Kao
 - Interior Design: Yifan Wang
 - SVA Animation (6th floor): Brent Shultz
+- MFA Fine Arts (9th floor): Brent Shultz
